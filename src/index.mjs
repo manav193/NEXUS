@@ -14,3 +14,6 @@ export { IdentityStatus, createIdentity, isIdentityActive } from "./identity/ide
 export { DataClass, ResourceOperation, createResource, canAccessResource } from "./data/resource.mjs";
 export { createMemoryDataStore } from "./data/store.mjs";
 export { ConsentStatus, createConsent, isConsentActive, hasConsent } from "./governance/consent.mjs";
+
+export { AuthStatus, createPasswordCredential, verifyPasswordCredential, createMemoryAuthStore } from "./auth/auth.mjs";
+export { createSession, isSessionActive } from "./auth/session.mjs";
