@@ -118,4 +118,4 @@ NEXUS is not:
 
 ## License
 
-MIT
+MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user identity model.\n- Per-resource ownership and tenant-style isolation boundary.\n- Data classification and purpose-scoped consent.\n- Explicit read/write/delete/export access operations.\n- Memory storage abstraction for deterministic tests.\n
