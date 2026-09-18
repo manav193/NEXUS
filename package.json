@@ -1,0 +1,15 @@
+{
+  "name": "@nimo/nexus",
+  "version": "0.1.0",
+  "description": "Policy-driven control plane for AI agent actions",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --test"
+  }
+}
