@@ -6,3 +6,4 @@ export { executeThroughGateway } from "./gateway/gateway.mjs";
 export { createMemoryAdapter } from "./gateway/adapters/memory.mjs";
 export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision } from "./observability/audit.mjs";
 export { ApprovalStatus, createApprovalRequest, createMemoryApprovalStore } from "./approval/approval.mjs";
+export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets, fingerprintAction } from "./security/guard.mjs";
