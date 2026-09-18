@@ -7,3 +7,4 @@ export { createMemoryAdapter } from "./gateway/adapters/memory.mjs";
 export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision } from "./observability/audit.mjs";
 export { ApprovalStatus, createApprovalRequest, createMemoryApprovalStore } from "./approval/approval.mjs";
 export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets, fingerprintAction } from "./security/guard.mjs";
+export { createNimoBridge, createDefaultNimoBridge } from "./integration/nimo.mjs";
