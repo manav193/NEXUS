@@ -11,85 +11,110 @@ NEXUS does not replace an AI model. It governs what the model is allowed to do.
 ## Design goals
 
 - **Policy first:** actions are evaluated against explicit policies before execution.
-- **Deny by default for dangerous operations:** destructive or sensitive actions require an explicit rule and/or approval.
-- **Explainable decisions:** every decision includes a machine-readable reason and matched policy.
+- **Deny by default for dangerous operations:** destructive or sensitive actions require explicit authorization and/or approval.
+- **Explainable decisions:** every decision includes machine-readable reason codes and matched policies.
 - **Auditable:** decisions and execution metadata are represented as structured events.
-- **Provider agnostic:** NEXUS must work with multiple model/agent runtimes.
-- **Minimal trust surface:** the control plane should not need model-internal reasoning or private credentials.
-- **Composable:** adapters for GitHub, MCP, HTTP APIs, desktop agents, and future integrations live outside the core policy engine.
+- **Provider agnostic:** NEXUS works with multiple model/agent runtimes.
+- **Minimal trust surface:** the control plane does not need model-internal reasoning or private credentials.
+- **Composable:** external integrations live behind adapters and do not redefine the core security boundary.
 
-## Initial architecture
+## Architecture
 
 ```
 Agent / NIMO
      |
      v
-+----------------------+
-|       NEXUS           |
-|-----------------------|
-| Action Normalizer     |
-| Policy Engine         |
-| Risk Classifier       |
-| Approval Gate         |
-| Secret Boundary       |
-| Audit/Event Recorder  |
-+-----------+----------+
-            |
-            v
-     Tool / API Gateway
-            |
-       External World
++---------------------------+
+|          NEXUS            |
+|---------------------------|
+| Canonical Action Identity |
+| Security Guard             |
+| Policy Engine              |
+| Risk Classifier            |
+| Approval Gate              |
+| Audit / Replay             |
++-------------+-------------+
+              |
+              v
+        Adapter Boundary
+     /       |       |      \
+  GitHub    MCP     HTTP   AutoLab
+              |
+              v
+       External Systems
 ```
 
-## Repository roadmap
+## Current implementation
 
-### Phase 1 — Foundation
-- Define canonical action/event contracts.
-- Implement deterministic policy evaluation.
-- Implement risk classification.
-- Establish deny/allow/approval decision semantics.
-- Add unit tests and security-oriented invariants.
-- Add architecture and threat-model documentation.
+### Phase 1 — Foundation ✅
+- Canonical action and decision contracts.
+- Deterministic risk classification.
+- Deterministic policy evaluation.
+- Fail-closed malformed-policy handling.
+- Architecture and threat-model documentation.
 
-### Phase 2 — Tool Gateway
-- GitHub adapter.
-- HTTP/API adapter.
-- MCP-compatible adapter boundary.
-- Safe parameter validation.
-- Execution timeout and cancellation.
+### Phase 2 — Tool Gateway ✅
+- Adapter boundary with no external I/O in core.
+- Gateway decision enforcement.
+- Adapter error isolation.
+- Memory adapter for deterministic tests.
+- External GitHub/HTTP/MCP adapters remain integration work, not core dependencies.
 
-### Phase 3 — Observability
+### Phase 3 — Observability + Replay Foundation ✅
 - Structured audit events.
-- Session timelines.
 - Correlation IDs.
-- Replayable decision history.
-- OpenTelemetry integration.
+- Decision/execution/blocked/error event types.
+- Decision replay against current policies.
+- Memory audit sink for tests.
 
-### Phase 4 — Human-in-the-loop
-- Approval requests.
-- Approval expiry.
-- Policy escalation.
-- Emergency kill switch.
+### Phase 4 — Human Approval + QA ✅
+- Approval lifecycle and TTL.
+- One-time consumption.
+- Exact action identity binding.
+- Policy-version binding.
+- Gateway enforcement.
+- Approval-focused QA tests.
 
-### Phase 5 — Agent Security
+### Phase 5 — Agent Security + QA ✅
+- Tool and operation capability allowlists.
+- Kill switch.
 - Prompt-injection signals.
-- Secret/credential boundary.
-- Tool abuse detection.
-- Policy conflict detection.
-- Security regression corpus.
+- Secret detection and redaction helpers.
+- Canonical SHA-256 action fingerprints.
+- Security regression tests.
+- Security denial is evaluated before policy approval.
 
-### Phase 6 — NIMO integration
-- NIMO-CORE adapter.
-- NIMO-KNOWLEDGE evaluation/knowledge bridge.
-- NIMO-AUTOLAB execution adapter.
+### Phase 6 — NIMO Integration + T&C ✅
+- NIMO execution adapter boundary.
+- NIMO-KNOWLEDGE evaluator boundary.
+- NIMO-AUTOLAB integration contract.
+- Terms & Conditions and operator responsibility.
+
+### Phase 7 — Production Hardening ✅
+- Stable canonical action fingerprints independent of object key order.
+- Approval requests bind to action fingerprint and policy version.
+- Gateway verifies approval bindings before adapter execution.
+- CI runs the test suite on Node 20, 22, and 24.
+- Broken legacy export removed from the public entrypoint.
+- Version bumped to 0.2.0.
+
+## Integration stability
+
+NEXUS is intentionally **contract-first**. NIMO-CORE, NIMO-KNOWLEDGE, NIMO-AUTOLAB, NIMO-WEB, ToolVerse, and other projects can evolve independently.
+
+Only the adapter contract should need to change when an external project changes its internal implementation. Do not import another project's internal modules into NEXUS core.
+
+## Security limitations
+
+NEXUS is a control layer, not a proof of safety. Prompt-injection and secret detection are heuristic signals. Production deployments should additionally use authenticated identities, durable approval storage, atomic one-time consumption, structured parameter validation, sandboxing, rate limits, secret managers, and independent security testing.
 
 ## Non-goals
 
 NEXUS is not:
 - an LLM provider,
 - a replacement for application authorization,
-- a guarantee that every malicious instruction can be detected,
-- a system that executes destructive actions without explicit policy.
+- a guarantee that malicious instructions can always be detected,
+- a system that executes destructive actions without explicit authorization.
 
 ## License
 
