@@ -1,0 +1,14 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createAction } from "../src/core/types.mjs";
+import { collectRiskSignals } from "../src/risk/signals.mjs";
+import { scoreRisk } from "../src/risk/scorer.mjs";
+import { evaluateRisk } from "../src/risk/engine.mjs";
+const action=createAction({actor:"user-1",tool:"files",operation:"read",resource:"doc-1"});
+test("normal context is low risk",()=>{const r=evaluateRisk({action});assert.equal(r.risk.level,"LOW");assert.equal(r.decision.decision,"ALLOW");});
+test("failed login velocity and new device create medium risk",()=>{const r=evaluateRisk({action,context:{failedLogins:5,newDevice:true}});assert.equal(r.risk.score,35);assert.equal(r.risk.level,"MEDIUM");});
+test("sensitive action creates medium risk",()=>{const r=evaluateRisk({action,context:{sensitiveAction:true}});assert.equal(r.risk.level,"MEDIUM");});
+test("known bad indicator creates high risk requiring approval",()=>{const r=evaluateRisk({action,context:{knownBadIndicator:true}});assert.equal(r.risk.level,"HIGH");assert.equal(r.decision.decision,"REQUIRE_APPROVAL");});
+test("multiple strong signals become critical and deny",()=>{const r=evaluateRisk({action,context:{knownBadIndicator:true,sensitiveAction:true,impossibleTravel:true}});assert.equal(r.risk.level,"CRITICAL");assert.equal(r.decision.decision,"DENY");});
+test("signals are deduplicated",()=>{assert.deepEqual(collectRiskSignals({newDevice:true,newIdentity:true,newDevice:true}),["NEW_DEVICE","NEW_IDENTITY"]);});
+test("unknown signals contribute zero weight",()=>{assert.equal(scoreRisk(["UNKNOWN_SIGNAL"]).score,0);});
