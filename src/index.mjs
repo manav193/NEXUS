@@ -15,3 +15,7 @@ export { createMemoryDataStore } from "./data/store.mjs";
 export { ConsentStatus, createConsent, isConsentActive, hasConsent } from "./governance/consent.mjs";
 export { AuthStatus, createPasswordCredential, verifyPasswordCredential, createMemoryAuthStore } from "./auth/auth.mjs";
 export { createMemorySessionStore, createSession, isSessionActive } from "./auth/session.mjs";
+export { RiskSignal, collectRiskSignals } from "./risk/signals.mjs";
+export { scoreRisk } from "./risk/scorer.mjs";
+export { riskDecision } from "./risk/decision.mjs";
+export { evaluateRisk } from "./risk/engine.mjs";
