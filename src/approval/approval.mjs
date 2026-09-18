@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { fingerprintAction } from "../core/canonical.mjs";
 
 export const ApprovalStatus = Object.freeze({
   PENDING: "PENDING",
@@ -12,12 +13,13 @@ function nowMs(clock) { return clock ? clock() : Date.now(); }
 
 export function createApprovalRequest({
   action, decision, requester = "unknown", ttlMs = 300000, correlationId = randomUUID(),
-  id = randomUUID(), createdAt = new Date().toISOString(),
+  id = randomUUID(), createdAt = new Date().toISOString(), policyVersion = "unversioned",
 }) {
   if (!action || !decision) throw new TypeError("Approval request requires action and decision");
   if (!Number.isSafeInteger(ttlMs) || ttlMs <= 0) throw new TypeError("ttlMs must be a positive safe integer");
   return Object.freeze({
-    id, action, decision, requester: String(requester), correlationId: String(correlationId),
+    id, action, actionFingerprint: fingerprintAction(action), decision,
+    requester: String(requester), policyVersion: String(policyVersion), correlationId: String(correlationId),
     status: ApprovalStatus.PENDING, createdAt,
     expiresAt: new Date(new Date(createdAt).getTime() + ttlMs).toISOString(),
     consumedAt: null, approver: null,
@@ -51,7 +53,7 @@ export function createMemoryApprovalStore({ clock = Date.now } = {}) {
       requests.set(id, next);
       return next;
     },
-    consume(id, { actor = "unknown" } = {}) {
+    consume(id, { actor = "unknown", action = null, policyVersion = "unversioned" } = {}) {
       const current = requests.get(id);
       if (!current) throw new Error("Approval request not found");
       if (current.status !== ApprovalStatus.APPROVED) return { approved: false, request: current };
@@ -59,6 +61,12 @@ export function createMemoryApprovalStore({ clock = Date.now } = {}) {
         const expired = Object.freeze({ ...current, status: ApprovalStatus.EXPIRED });
         requests.set(id, expired);
         return { approved: false, request: expired };
+      }
+      if (action && fingerprintAction(action) !== current.actionFingerprint) {
+        return { approved: false, request: current, reason: "APPROVAL_ACTION_MISMATCH" };
+      }
+      if (String(policyVersion) !== current.policyVersion) {
+        return { approved: false, request: current, reason: "APPROVAL_POLICY_VERSION_MISMATCH" };
       }
       const consumed = Object.freeze({
         ...current, status: ApprovalStatus.CONSUMED,
