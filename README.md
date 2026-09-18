@@ -133,3 +133,10 @@ MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user id
 - Memory session store retains only token hashes, never raw bearer tokens.
 - Session revocation and identity-scoped session listing.
 - Authentication documentation updated with production OIDC/OAuth2 + PKCE guidance.
+
+### Phase 11 — Risk & Abuse Intelligence ✅
+- Explainable suspicious-activity signals.
+- Deterministic 0–100 risk scoring.
+- LOW / MEDIUM / HIGH / CRITICAL risk levels.
+- High-risk approval and critical-risk denial mapping.
+- Risk-engine regression tests and production roadmap.
