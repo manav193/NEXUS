@@ -55,5 +55,14 @@ export function createMemoryAuthStore() {
     get(username) {
       return accounts.get(String(username ?? "").trim().toLowerCase())?.identity ?? null;
     },
+    setStatus(username, status) {
+      const key = String(username ?? "").trim().toLowerCase();
+      if (!Object.values(AuthStatus).includes(status)) throw new TypeError("Invalid auth status");
+      const account = accounts.get(key);
+      if (!account) return null;
+      const identity = Object.freeze({ ...account.identity, status });
+      accounts.set(key, Object.freeze({ ...account, identity }));
+      return identity;
+    },
   });
 }
