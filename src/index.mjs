@@ -1,11 +1,11 @@
 export { createAction, createDecision, Decision, RiskLevel } from "./core/types.mjs";
 export { classifyRisk } from "./core/risk.mjs";
 export { evaluateAction } from "./core/policy.mjs";
+export { canonicalizeAction, fingerprintAction } from "./core/canonical.mjs";
 export { NexusGatewayError } from "./gateway/errors.mjs";
 export { executeThroughGateway } from "./gateway/gateway.mjs";
 export { createMemoryAdapter } from "./gateway/adapters/memory.mjs";
 export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision } from "./observability/audit.mjs";
 export { ApprovalStatus, createApprovalRequest, createMemoryApprovalStore } from "./approval/approval.mjs";
-export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets, fingerprintAction } from "./security/guard.mjs";
-export { createNimoBridge, createDefaultNimoBridge } from "./integration/nimo.mjs";
+export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets } from "./security/guard.mjs";
 export { createNimoAdapter, createNimoKnowledgeBridge } from "./integrations/nimo.mjs";
