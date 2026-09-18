@@ -140,3 +140,10 @@ MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user id
 - LOW / MEDIUM / HIGH / CRITICAL risk levels.
 - High-risk approval and critical-risk denial mapping.
 - Risk-engine regression tests and production roadmap.
+
+### Phase 12 — Master QA & Regression Gate 🔍
+- Full layer-by-layer QA matrix added.
+- Cross-layer security invariant tests added.
+- Stale NIMO integration path removed.
+- Current NIMO adapter/gateway contract verified.
+- Runtime results intentionally delegated to GitHub Actions CI; no unverified pass claim.
