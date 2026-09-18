@@ -119,3 +119,9 @@ NEXUS is not:
 ## License
 
 MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user identity model.\n- Per-resource ownership and tenant-style isolation boundary.\n- Data classification and purpose-scoped consent.\n- Explicit read/write/delete/export access operations.\n- Memory storage abstraction for deterministic tests.\n
+### Phase 9 — Shared Authentication Foundation ✅
+- One NEXUS identity can be used across ecosystem applications.
+- Username normalization and password-derived credential storage.
+- No plaintext password storage in the reference implementation.
+- Short-lived session contract.
+- Shared authentication tests and production protocol guidance.
