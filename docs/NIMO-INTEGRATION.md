@@ -29,7 +29,7 @@ AUDIT
 
 ## Design rule
 
-The bridge is transport/orchestration only. It must not become a second policy engine or silently execute actions.
+The NIMO integration uses the NEXUS gateway directly. The adapter is transport-only and must not become a second policy engine or silently execute actions.
 
 ## Example
 
