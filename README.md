@@ -125,3 +125,11 @@ MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user id
 - No plaintext password storage in the reference implementation.
 - Short-lived session contract.
 - Shared authentication tests and production protocol guidance.
+
+### Phase 10 — Account & Session Lifecycle Hardening ✅
+- ACTIVE / LOCKED / REVOKED account states.
+- Locked/revoked accounts cannot authenticate.
+- High-entropy short-lived bearer sessions.
+- Memory session store retains only token hashes, never raw bearer tokens.
+- Session revocation and identity-scoped session listing.
+- Authentication documentation updated with production OIDC/OAuth2 + PKCE guidance.
