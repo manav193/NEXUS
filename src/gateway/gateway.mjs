@@ -14,19 +14,35 @@ function emit(auditSink, event) {
 }
 
 export async function executeThroughGateway({
-  action, policies = [], adapter, approval = false,
-  auditSink = null, correlationId = randomUUID(),
+  action, policies = [], adapter, approval = false, approvalRequestId = null,
+  approvalStore = null, auditSink = null, correlationId = randomUUID(), actor = action?.actor ?? "unknown",
 }) {
   if (!action) throw new NexusGatewayError("Action is required", "INVALID_ACTION");
   assertAdapter(adapter);
   const decision = evaluateAction(action, policies);
-
   emit(auditSink, createAuditEvent({ type: AuditEventType.DECISION, action, decision, correlationId }));
 
-  if (decision.decision === Decision.DENY ||
-      (decision.decision === Decision.REQUIRE_APPROVAL && approval !== true)) {
+  let authorized = decision.decision === Decision.ALLOW;
+  if (decision.decision === Decision.DENY) {
     emit(auditSink, createAuditEvent({ type: AuditEventType.BLOCKED, action, decision, correlationId }));
     return Object.freeze({ executed: false, decision, result: null, correlationId });
+  }
+
+  if (decision.decision === Decision.REQUIRE_APPROVAL) {
+    if (approvalStore && approvalRequestId) {
+      const consumed = approvalStore.consume(approvalRequestId, { actor });
+      authorized = consumed.approved === true && consumed.request.action === action;
+      if (!authorized) {
+        emit(auditSink, createAuditEvent({ type: AuditEventType.BLOCKED, action, decision, correlationId, errorCode: "APPROVAL_NOT_VALID" }));
+        return Object.freeze({ executed: false, decision, result: null, correlationId, approvalRequest: consumed.request });
+      }
+    } else {
+      authorized = approval === true;
+    }
+    if (!authorized) {
+      emit(auditSink, createAuditEvent({ type: AuditEventType.BLOCKED, action, decision, correlationId }));
+      return Object.freeze({ executed: false, decision, result: null, correlationId });
+    }
   }
 
   try {
