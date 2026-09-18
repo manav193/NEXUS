@@ -9,3 +9,8 @@ export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision
 export { ApprovalStatus, createApprovalRequest, createMemoryApprovalStore } from "./approval/approval.mjs";
 export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets } from "./security/guard.mjs";
 export { createNimoAdapter, createNimoKnowledgeBridge } from "./integrations/nimo.mjs";
+
+export { IdentityStatus, createIdentity, isIdentityActive } from "./identity/identity.mjs";
+export { DataClass, ResourceOperation, createResource, canAccessResource } from "./data/resource.mjs";
+export { createMemoryDataStore } from "./data/store.mjs";
+export { ConsentStatus, createConsent, isConsentActive, hasConsent } from "./governance/consent.mjs";
