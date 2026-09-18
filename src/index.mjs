@@ -4,3 +4,4 @@ export { evaluateAction } from "./core/policy.mjs";
 export { NexusGatewayError } from "./gateway/errors.mjs";
 export { executeThroughGateway } from "./gateway/gateway.mjs";
 export { createMemoryAdapter } from "./gateway/adapters/memory.mjs";
+export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision } from "./observability/audit.mjs";
