@@ -8,3 +8,4 @@ export { AuditEventType, createAuditEvent, createMemoryAuditSink, replayDecision
 export { ApprovalStatus, createApprovalRequest, createMemoryApprovalStore } from "./approval/approval.mjs";
 export { SecurityReason, createSecurityGuard, createKillSwitch, redactSecrets, fingerprintAction } from "./security/guard.mjs";
 export { createNimoBridge, createDefaultNimoBridge } from "./integration/nimo.mjs";
+export { createNimoAdapter, createNimoKnowledgeBridge } from "./integrations/nimo.mjs";
