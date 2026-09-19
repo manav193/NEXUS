@@ -19,3 +19,6 @@ export { RiskSignal, collectRiskSignals } from "./risk/signals.mjs";
 export { scoreRisk } from "./risk/scorer.mjs";
 export { riskDecision } from "./risk/decision.mjs";
 export { evaluateRisk } from "./risk/engine.mjs";
+
+export { createEmailVerificationService, EmailVerificationDefaults } from "./auth/email-verification.mjs";
+export { AccountStorageContract, SessionStorageContract, UserDataStorageRules, assertStorageAdapter } from "./auth/storage-contract.mjs";
