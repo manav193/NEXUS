@@ -141,6 +141,13 @@ MIT\n### Phase 8 — Identity & Data Governance ✅\n- Provider-agnostic user id
 - High-risk approval and critical-risk denial mapping.
 - Risk-engine regression tests and production roadmap.
 
+### Phase 13 — Email Verification & Storage Boundary 🔐
+- Six-digit email verification challenge with expiry, resend cooldown, and attempt limits.
+- OTP stored only as an HMAC digest; plaintext code is never persisted.
+- Provider-neutral email sender contract.
+- Durable account/session storage contract for production adapters.
+- Explicit user-data and secret-storage boundaries.
+
 ### Phase 12 — Master QA & Regression Gate 🔍
 - Full layer-by-layer QA matrix added.
 - Cross-layer security invariant tests added.
